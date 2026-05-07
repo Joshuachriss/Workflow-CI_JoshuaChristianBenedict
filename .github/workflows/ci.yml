@@ -81,11 +81,27 @@ jobs:
 
       - name: Build Docker Image (mlflow models build-docker)
         run: |
-          # FIX: path run_id.txt ada di root, bukan MLProject/
           RUN_ID=$(cat run_id.txt)
           echo "Run ID: $RUN_ID"
-          # FIX: path mlruns juga di root
-          MODEL_URI="mlruns/0/${RUN_ID}/artifacts/model"
+      
+          EXP_ID=$(ls mlruns/ | grep -v "models" | grep -v "0" | head -1)
+          
+          if [ -z "$EXP_ID" ]; then
+            EXP_ID="0"
+          fi
+          echo "Experiment ID: $EXP_ID"
+      
+          MODEL_URI="mlruns/${EXP_ID}/${RUN_ID}/artifacts/model"
+          echo "Model URI: $MODEL_URI"
+      
+          if [ ! -f "${MODEL_URI}/MLmodel" ]; then
+            echo "=== DEBUG: Struktur mlruns ==="
+            find mlruns/ -name "MLmodel" 2>/dev/null
+            MLMODEL_PATH=$(find mlruns/ -name "MLmodel" | head -1)
+            MODEL_URI=$(dirname $MLMODEL_PATH)
+            echo "Model URI dari find: $MODEL_URI"
+          fi
+      
           mlflow models build-docker \
             -m "$MODEL_URI" \
             -n "${{ secrets.DOCKER_USERNAME }}/iris-classifier" \
