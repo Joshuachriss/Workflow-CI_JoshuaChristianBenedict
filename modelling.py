@@ -66,6 +66,10 @@ def train():
         print(f"\nRun ID    : {run.info.run_id}")
         print(f"Experiment: {EXPERIMENT_NAME}")
 
+        with open("run_id.txt", "w") as f:
+                f.write(run.info.run_id)
+        print("run_id.txt tersimpan.")
+
 
 if __name__ == "__main__":
     print("Memulai training model (Basic - Autolog)...")
