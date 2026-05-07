@@ -41,7 +41,8 @@ jobs:
       # 4. Jalankan MLflow Project
       - name: Run MLflow Project (Training)
         run: |
-          cd MLProject
+          echo "=== Struktur repo ==="
+          ls -la
           mlflow run . \
             --env-manager=local \
             -P n_estimators=${{ github.event.inputs.n_estimators || '100' }} \
@@ -53,20 +54,19 @@ jobs:
         with:
           name: mlflow-run-artifacts
           path: |
-            MLProject/mlruns/
-            MLProject/mlproject_artifacts/
-            MLProject/run_id.txt
-
+            mlruns/
+            mlproject_artifacts/
+            run_id.txt
       # 6. Commit artefak ke branch gh-artifacts
       - name: Commit Artifacts to Repository
         run: |
           git config --global user.email "ci@github.com"
           git config --global user.name "GitHub CI Bot"
           mkdir -p saved_artifacts
-          cp -r MLProject/mlproject_artifacts/* saved_artifacts/ 2>/dev/null || true
-          cp MLProject/run_id.txt saved_artifacts/ 2>/dev/null || true
+          cp -r mlproject_artifacts/* saved_artifacts/ 2>/dev/null || true
+          cp run_id.txt saved_artifacts/ 2>/dev/null || true
           git add saved_artifacts/
-          git diff --staged --quiet || git commit -m "ci: save training artifacts [run $(date +'%Y%m%d-%H%M%S')] [skip ci]"
+          git diff --staged --quiet || git commit -m "ci: save training artifacts [skip ci]"
           git push
 
       # 7. Setup Docker (untuk build Docker image)
