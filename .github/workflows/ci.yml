@@ -79,6 +79,21 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Patch Model Requirements (fix packaging conflict)
+        run: |
+          echo "=== Mencari requirements.txt model ==="
+          find mlruns/ -name "requirements.txt" | head -5
+
+          for req_file in $(find mlruns/ -name "requirements.txt"); do
+            echo "Patching: $req_file"
+            # Ganti packaging==23.2 dengan packaging>=24.0
+            sed -i 's/packaging==23\.2/packaging>=24.0/' $req_file
+            # Hapus baris wheel jika ada (biarkan pip resolve sendiri)
+            sed -i '/^wheel==/d' $req_file
+            echo "=== Isi setelah patch ==="
+            cat $req_file
+          done
+
       - name: Build Docker Image (mlflow models build-docker)
         run: |
           RUN_ID=$(cat run_id.txt)
