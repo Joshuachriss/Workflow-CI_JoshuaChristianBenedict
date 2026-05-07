@@ -152,6 +152,10 @@ jobs:
           echo "=== requirements.txt yang akan dipakai ==="
           cat "${MODEL_URI}/requirements.txt"
 
+          # PATCH: Force MLflow's Docker template to use the Python 3.8 specific pip URL
+          MLFLOW_DIR=$(python -c "import mlflow, os; print(os.path.dirname(mlflow.__file__))")
+          find $MLFLOW_DIR -type f -name "*.py" -exec sed -i 's|https://bootstrap.pypa.io/get-pip.py|https://bootstrap.pypa.io/pip/3.8/get-pip.py|g' {} +
+
           mlflow models build-docker \
             -m "$MODEL_URI" \
             -n "${{ secrets.DOCKER_USERNAME }}/iris-classifier"
