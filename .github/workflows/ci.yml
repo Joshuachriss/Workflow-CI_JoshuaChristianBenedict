@@ -80,21 +80,44 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Patch Model Requirements (fix wheel conflict)
+      - name: Patch Model Requirements (fix all env conflicts)
         run: |
-          # requirements.txt minimal tanpa mlflow dan packaging
-          # mlflow sudah ada di base image Docker, tidak perlu di-install ulang
+          echo "=== File-file yang akan di-patch ==="
+          find mlruns/ -name "requirements.txt" -o -name "python_env.yaml" \
+               -o -name "conda.yaml" | grep artifacts
+
+          # 1. Patch requirements.txt - hapus wheel dan packaging conflict
           CLEAN_REQS="scikit-learn==1.4.0
           numpy==1.26.4
           pandas==2.2.0
           cloudpickle==3.1.2
           scipy==1.12.0
           joblib==1.3.2"
+          for f in $(find mlruns/ -path "*/artifacts/model/requirements.txt"); do
+            echo "Patching requirements: $f"
+            echo "$CLEAN_REQS" > $f
+            cat $f
+          done
 
-          for req_file in $(find mlruns/ -name "requirements.txt"); do
-            echo "Patching: $req_file"
-            echo "$CLEAN_REQS" > $req_file
-            cat $req_file
+          # 2. Patch python_env.yaml - upgrade Python 3.8 ke 3.10
+          for f in $(find mlruns/ -path "*/artifacts/model/python_env.yaml"); do
+            echo "=== Sebelum patch python_env.yaml ==="
+            cat $f
+            sed -i 's/python_version:.*"3\.8.*"/python_version: "3.10.14"/' $f
+            sed -i "s/python_version:.*'3\.8.*'/python_version: '3.10.14'/" $f
+            sed -i 's/3\.8\.[0-9]*/3.10.14/g' $f
+            echo "=== Sesudah patch ==="
+            cat $f
+          done
+
+          # 3. Patch conda.yaml - upgrade Python 3.8 ke 3.10
+          for f in $(find mlruns/ -path "*/artifacts/model/conda.yaml"); do
+            echo "=== Sebelum patch conda.yaml ==="
+            cat $f
+            sed -i 's/python=3\.8\.[0-9]*/python=3.10.14/g' $f
+            sed -i 's/python=3\.8/python=3.10.14/g' $f
+            echo "=== Sesudah patch ==="
+            cat $f
           done
 
       - name: Build Docker Image (mlflow models build-docker)
