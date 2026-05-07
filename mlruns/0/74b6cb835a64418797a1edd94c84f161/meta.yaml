@@ -1,0 +1,15 @@
+artifact_uri: file:///D:/Kuliah/Semester%206/3%20MBKM/MLS/Workflow-CI_JoshuaChristianBenedict/mlruns/0/74b6cb835a64418797a1edd94c84f161/artifacts
+end_time: 1778136677605
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 74b6cb835a64418797a1edd94c84f161
+run_name: amusing-steed-75
+run_uuid: 74b6cb835a64418797a1edd94c84f161
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1778136669495
+status: 4
+tags: []
+user_id: josh

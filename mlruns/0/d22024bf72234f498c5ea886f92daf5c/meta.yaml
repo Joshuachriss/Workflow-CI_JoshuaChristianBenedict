@@ -1,0 +1,15 @@
+artifact_uri: file:///D:/Kuliah/Semester%206/3%20MBKM/MLS/Workflow-CI_JoshuaChristianBenedict/mlruns/0/d22024bf72234f498c5ea886f92daf5c/artifacts
+end_time: 1778137018751
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: d22024bf72234f498c5ea886f92daf5c
+run_name: shivering-shoat-34
+run_uuid: d22024bf72234f498c5ea886f92daf5c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1778137014170
+status: 4
+tags: []
+user_id: josh

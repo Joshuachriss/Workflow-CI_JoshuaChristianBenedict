@@ -1,0 +1,15 @@
+artifact_uri: file:///D:/Kuliah/Semester%206/3%20MBKM/MLS/Workflow-CI_JoshuaChristianBenedict/mlruns/0/e649d0d3796f459cac9f42399bf99146/artifacts
+end_time: 1778137151567
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: e649d0d3796f459cac9f42399bf99146
+run_name: fun-wasp-80
+run_uuid: e649d0d3796f459cac9f42399bf99146
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1778137135956
+status: 3
+tags: []
+user_id: josh

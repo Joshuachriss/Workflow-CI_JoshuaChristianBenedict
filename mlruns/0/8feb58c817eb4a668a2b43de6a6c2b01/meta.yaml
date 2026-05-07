@@ -1,0 +1,15 @@
+artifact_uri: file:///D:/Kuliah/Semester%206/3%20MBKM/MLS/Workflow-CI_JoshuaChristianBenedict/mlruns/0/8feb58c817eb4a668a2b43de6a6c2b01/artifacts
+end_time: 1778137060296
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 8feb58c817eb4a668a2b43de6a6c2b01
+run_name: able-finch-908
+run_uuid: 8feb58c817eb4a668a2b43de6a6c2b01
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1778137056569
+status: 4
+tags: []
+user_id: josh

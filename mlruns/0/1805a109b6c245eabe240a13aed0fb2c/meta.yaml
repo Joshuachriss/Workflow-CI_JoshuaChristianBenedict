@@ -1,0 +1,15 @@
+artifact_uri: file:///D:/Kuliah/Semester%206/3%20MBKM/MLS/Workflow-CI_JoshuaChristianBenedict/mlruns/0/1805a109b6c245eabe240a13aed0fb2c/artifacts
+end_time: 1778136697777
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 1805a109b6c245eabe240a13aed0fb2c
+run_name: auspicious-squid-437
+run_uuid: 1805a109b6c245eabe240a13aed0fb2c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1778136694611
+status: 4
+tags: []
+user_id: josh
