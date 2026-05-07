@@ -81,41 +81,45 @@ jobs:
 
       - name: Patch Model Requirements (fix wheel conflict)
         run: |
+          # Tulis ulang requirements.txt dengan versi yang bersih, tanpa konflik
+          CLEAN_REQS="mlflow==2.11.1
+          scikit-learn==1.4.0
+          numpy==1.26.4
+          pandas==2.2.0
+          cloudpickle==3.1.2
+          scipy==1.12.0
+          pyyaml==6.0.3
+          packaging==23.2"
+
           for req_file in $(find mlruns/ -name "requirements.txt"); do
-            echo "=== Sebelum patch: $req_file ==="
-            cat $req_file
-            
-            # Hapus wheel saja, jangan ubah packaging
-            sed -i '/^wheel/d' $req_file
-            # Kembalikan packaging ke versi yang kompatibel dengan mlflow
-            sed -i 's/packaging>=24\.0/packaging==23.2/' $req_file
-            
-            echo "=== Sesudah patch ==="
+            echo "Mengganti: $req_file"
+            echo "$CLEAN_REQS" > $req_file
+            echo "=== Isi baru ==="
             cat $req_file
           done
 
       - name: Build Docker Image (mlflow models build-docker)
         run: |
           RUN_ID=$(cat run_id.txt)
-          echo "Run ID: $RUN_ID"
-      
-          EXP_ID=$(ls mlruns/ | grep -v "models" | grep -v "0" | head -1)
-          if [ -z "$EXP_ID" ]; then
-            EXP_ID="0"
+          echo "Run ID dari run_id.txt: $RUN_ID"
+
+          # Cari MLmodel dari semua run yang ada, pilih yang TERBARU
+          MLMODEL_PATH=$(find mlruns/ -name "MLmodel" -printf "%T@ %p\n" \
+                        2>/dev/null | sort -n | tail -1 | awk '{print $2}')
+
+          if [ -z "$MLMODEL_PATH" ]; then
+            echo "ERROR: Tidak ada MLmodel ditemukan!"
+            find mlruns/ -type f | head -20
+            exit 1
           fi
-          echo "Experiment ID: $EXP_ID"
-      
-          MODEL_URI="mlruns/${EXP_ID}/${RUN_ID}/artifacts/model"
-      
-          if [ ! -f "${MODEL_URI}/MLmodel" ]; then
-            echo "=== DEBUG: Mencari MLmodel ==="
-            find mlruns/ -name "MLmodel" 2>/dev/null
-            MLMODEL_PATH=$(find mlruns/ -name "MLmodel" | head -1)
-            MODEL_URI=$(dirname $MLMODEL_PATH)
-          fi
-      
-          echo "Model URI: $MODEL_URI"
-      
+
+          MODEL_URI=$(dirname $MLMODEL_PATH)
+          echo "Model URI (terbaru): $MODEL_URI"
+
+          # Verifikasi requirements.txt sudah bersih
+          echo "=== requirements.txt yang akan dipakai ==="
+          cat "${MODEL_URI}/requirements.txt"
+
           mlflow models build-docker \
             -m "$MODEL_URI" \
             -n "${{ secrets.DOCKER_USERNAME }}/iris-classifier"
