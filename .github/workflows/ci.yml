@@ -118,6 +118,15 @@ jobs:
             sed -i 's/python=3\.8/python=3.10.14/g' $f
             echo "=== Sesudah patch ==="
             cat $f
+
+          # 4. Patch MLmodel - upgrade Python 3.8 ke 3.10
+          for f in $(find mlruns/ -name "MLmodel"); do
+            echo "=== Sebelum patch MLmodel ==="
+            cat $f
+            sed -i 's/python_version: 3\.8\.[0-9]*/python_version: 3.10.14/g' $f
+            sed -i 's/python_version: 3\.8/python_version: 3.10.14/g' $f
+            echo "=== Sesudah patch ==="
+            cat $f
           done
 
       - name: Build Docker Image (mlflow models build-docker)
